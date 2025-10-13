@@ -20,6 +20,9 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
+//Observer Func Import
+import org.example.tourmanagement.observerPattern.BookingEventSubject;
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -306,6 +309,8 @@ public class AdminController {
         booking.setStatus(BookingStatus.APPROVED);
         bookingRepository.save(booking);
         System.out.println("Booking approved successfully");
+        // Use the Observer Pattern to do things like logging and email notifications
+        BookingEventSubject.getInstance().notifyBookingApproved(booking);
         redirectAttributes.addFlashAttribute("success", "Booking approved successfully");
         return "redirect:/admin/bookings";
     }
