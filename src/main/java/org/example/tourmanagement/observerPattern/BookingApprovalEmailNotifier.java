@@ -11,6 +11,8 @@ public class BookingApprovalEmailNotifier implements BookingEventObserver {
                 ",\n\nYour booking with ID " + booking.getId() + " has been approved.\nEnjoy your trip!";
         // Replace this with your actual email sending logic
         System.out.println("[EMAIL to " + recipient + "] " + subject + "\n" + message);
-        // EmailService.sendEmail(recipient, subject, message); // Uncomment if you have an EmailService
+
     }
-}
+
+
+    }

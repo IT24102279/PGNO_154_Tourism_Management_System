@@ -254,7 +254,26 @@ public class AdminController {
         destinationRepository.findById(id).ifPresent(destinationRepository::delete);
         return "redirect:/admin/destinations?deleted";
     }
+//finance officer stuff and eamil gen
+public String generateMailtoLink(Booking booking) {
+    String recipient = booking.getUser().getEmail();
+    String subject = "Your Booking Has Been Approved!";
+    StringBuilder body = new StringBuilder();
+    body.append("Hello ").append(booking.getUser().getUsername()).append(",%0D%0A%0D%0A");
+    body.append("Your booking with ID ").append(booking.getId()).append(" has been approved.%0D%0A");
+    body.append("Destination: ").append(booking.getDestination().getName()).append("%0D%0A");
+    body.append("Travel Date: ").append(booking.getTravelDate()).append("%0D%0A");
+    body.append("Number of Travelers: ").append(booking.getNumberOfTravelers()).append("%0D%0A");
+    body.append("%0D%0AEnjoy your trip!%0D%0A%0D%0A");
+    body.append("View your destination image here: ").append(booking.getDestination().getImageUrl()).append("%0D%0A");
 
+    return String.format(
+            "mailto:%s?subject=%s&body=%s",
+            java.net.URLEncoder.encode(recipient, java.nio.charset.StandardCharsets.UTF_8),
+            java.net.URLEncoder.encode(subject, java.nio.charset.StandardCharsets.UTF_8),
+            body.toString()
+    );
+}
     // Booking management endpoints
     @GetMapping("/bookings")
     public String manageBookings(Model model,
@@ -310,6 +329,9 @@ public class AdminController {
         bookingRepository.save(booking);
         System.out.println("Booking approved successfully");
         // Use the Observer Pattern to do things like logging and email notifications
+        //this attribute is needed to make email link open from frontend
+
+        redirectAttributes.addFlashAttribute("mailtoLink", generateMailtoLink(booking));
         BookingEventSubject.getInstance().notifyBookingApproved(booking);
         redirectAttributes.addFlashAttribute("success", "Booking approved successfully");
         return "redirect:/admin/bookings";

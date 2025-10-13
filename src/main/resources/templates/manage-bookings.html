@@ -686,6 +686,10 @@
     </style>
 </head>
 <body>
+<!--Mailto Link : this opens a new tab with the details of approved booking upon approval-->
+<div th:if="${mailtoLink}">
+    <button id="openMailtoBtn" type="button" style="display:none;" th:data-mailto="${mailtoLink}">Send Approval Email</button>
+</div>
 <!-- Header -->
 <header>
     <div class="header-container">
@@ -954,6 +958,20 @@
 </div>
 
 <script>
+    <!-- At the bottom, add this script: -->
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var btn = document.getElementById("openMailtoBtn");
+        if (btn) {
+        var mailto = btn.getAttribute("data-mailto");
+        // Open in new tab/window
+        window.open(mailto, '_blank');
+        // Optionally, show the button for manual click as backup:
+        // btn.style.display = "block";
+    }
+});
+
+
     // Animation on scroll
     document.addEventListener('DOMContentLoaded', function() {
         const animatedElements = document.querySelectorAll('.animate');
