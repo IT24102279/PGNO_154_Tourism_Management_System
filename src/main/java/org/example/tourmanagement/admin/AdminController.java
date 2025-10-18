@@ -2,11 +2,6 @@ package org.example.tourmanagement.admin;
 
 import org.example.tourmanagement.user.User;
 import org.example.tourmanagement.user.UserRepository;
-import org.example.tourmanagement.destination.Destination;
-import org.example.tourmanagement.destination.DestinationRepository;
-import org.example.tourmanagement.booking.Booking;
-import org.example.tourmanagement.booking.BookingRepository;
-import org.example.tourmanagement.booking.BookingStatus;
 import org.example.tourmanagement.support.InquiryRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -29,15 +24,11 @@ public class AdminController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final DestinationRepository destinationRepository;
-    private final BookingRepository bookingRepository;
     private final InquiryRepository inquiryRepository;
 
-    public AdminController(UserRepository userRepository, PasswordEncoder passwordEncoder, DestinationRepository destinationRepository, BookingRepository bookingRepository, InquiryRepository inquiryRepository) {
+    public AdminController(UserRepository userRepository, PasswordEncoder passwordEncoder, InquiryRepository inquiryRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.destinationRepository = destinationRepository;
-        this.bookingRepository = bookingRepository;
         this.inquiryRepository = inquiryRepository;
     }
 
@@ -59,8 +50,8 @@ public class AdminController {
         model.addAttribute("totalUsers", totalUsers);
         
         // Active bookings count (APPROVED status)
-        long activeBookings = bookingRepository.countByStatus(BookingStatus.APPROVED);
-        model.addAttribute("activeBookings", activeBookings);
+        // long activeBookings = bookingRepository.countByStatus(BookingStatus.APPROVED);
+        // model.addAttribute("activeBookings", activeBookings);
         
         // Support tickets count (all inquiries)
         long supportTickets = inquiryRepository.count();
@@ -71,15 +62,15 @@ public class AdminController {
         model.addAttribute("monthlyRevenue", monthlyRevenue);
         
         // Additional analytics
-        long totalBookings = bookingRepository.count();
-        long pendingBookings = bookingRepository.countByStatus(BookingStatus.PENDING);
-        long rejectedBookings = bookingRepository.countByStatus(BookingStatus.REJECTED);
-        long completedBookings = bookingRepository.countByStatus(BookingStatus.COMPLETED);
+        // long totalBookings = bookingRepository.count();
+        // long pendingBookings = bookingRepository.countByStatus(BookingStatus.PENDING);
+        // long rejectedBookings = bookingRepository.countByStatus(BookingStatus.REJECTED);
+        // long completedBookings = bookingRepository.countByStatus(BookingStatus.COMPLETED);
         
-        model.addAttribute("totalBookings", totalBookings);
-        model.addAttribute("pendingBookings", pendingBookings);
-        model.addAttribute("rejectedBookings", rejectedBookings);
-        model.addAttribute("completedBookings", completedBookings);
+        // model.addAttribute("totalBookings", totalBookings);
+        // model.addAttribute("pendingBookings", pendingBookings);
+        // model.addAttribute("rejectedBookings", rejectedBookings);
+        // model.addAttribute("completedBookings", completedBookings);
     }
     
     private BigDecimal calculateMonthlyRevenue() {
@@ -88,17 +79,17 @@ public class AdminController {
         LocalDate startOfMonth = currentMonth.atDay(1);
         LocalDate endOfMonth = currentMonth.atEndOfMonth();
         
-        List<Booking> monthlyBookings = bookingRepository.findByTravelDateBetween(startOfMonth, endOfMonth);
+        // List<Booking> monthlyBookings = bookingRepository.findByTravelDateBetween(startOfMonth, endOfMonth);
         
-        double totalRevenue = monthlyBookings.stream()
-                .filter(booking -> booking.getStatus() == BookingStatus.APPROVED || booking.getStatus() == BookingStatus.COMPLETED)
-                .mapToDouble(booking -> {
-                    if (booking.getDestination() != null && booking.getDestination().getPrice() != null) {
-                        return booking.getDestination().getPrice();
-                    }
-                    return 0.0;
-                })
-                .sum();
+        double totalRevenue = 0; // monthlyBookings.stream()
+                // .filter(booking -> booking.getStatus() == BookingStatus.APPROVED || booking.getStatus() == BookingStatus.COMPLETED)
+                // .mapToDouble(booking -> {
+                //     if (booking.getDestination() != null && booking.getDestination().getPrice() != null) {
+                //         return booking.getDestination().getPrice();
+                //     }
+                //     return 0.0;
+                // })
+                // .sum();
         
         return BigDecimal.valueOf(totalRevenue);
     }
@@ -162,256 +153,256 @@ public class AdminController {
     }
 
     // Destination management endpoints
-    @GetMapping("/destinations")
-    public String manageDestinations(Model model) {
-        List<Destination> destinations = destinationRepository.findAll();
-        model.addAttribute("destinations", destinations);
-        model.addAttribute("newDestination", new CreateDestinationForm());
-        return "manage-destinations";
-    }
+//     @GetMapping("/destinations")
+//     public String manageDestinations(Model model) {
+//         List<Destination> destinations = destinationRepository.findAll();
+//         model.addAttribute("destinations", destinations);
+//         model.addAttribute("newDestination", new CreateDestinationForm());
+//         return "manage-destinations";
+//     }
 
-    @PostMapping("/destinations")
-    public String createDestination(@ModelAttribute("newDestination") CreateDestinationForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        if (form.getName() == null || form.getName().isBlank()) {
-            bindingResult.rejectValue("name", "required", "Destination name is required");
-        }
-        if (form.getDescription() == null || form.getDescription().isBlank()) {
-            bindingResult.rejectValue("description", "required", "Description is required");
-        } else if (form.getDescription().length() < 10 || form.getDescription().length() > 500) {
-            bindingResult.rejectValue("description", "size", "Description must be between 10 and 500 characters");
-        }
-        if (form.getImageUrl() == null || form.getImageUrl().isBlank()) {
-            bindingResult.rejectValue("imageUrl", "required", "Image URL is required");
-        }
-        if (form.getRegion() == null || form.getRegion().isBlank()) {
-            bindingResult.rejectValue("region", "required", "Region is required");
-        }
-        if (form.getPrice() == null || form.getPrice() <= 0) {
-            bindingResult.rejectValue("price", "required", "Valid price is required");
-        }
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("error", "Please correct the form. " + (form.getDescription() != null && form.getDescription().length() < 10 ? "Description is too short." : ""));
-            return "redirect:/admin/destinations";
-        }
+//     @PostMapping("/destinations")
+//     public String createDestination(@ModelAttribute("newDestination") CreateDestinationForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+//         if (form.getName() == null || form.getName().isBlank()) {
+//             bindingResult.rejectValue("name", "required", "Destination name is required");
+//         }
+//         if (form.getDescription() == null || form.getDescription().isBlank()) {
+//             bindingResult.rejectValue("description", "required", "Description is required");
+//         } else if (form.getDescription().length() < 10 || form.getDescription().length() > 500) {
+//             bindingResult.rejectValue("description", "size", "Description must be between 10 and 500 characters");
+//         }
+//         if (form.getImageUrl() == null || form.getImageUrl().isBlank()) {
+//             bindingResult.rejectValue("imageUrl", "required", "Image URL is required");
+//         }
+//         if (form.getRegion() == null || form.getRegion().isBlank()) {
+//             bindingResult.rejectValue("region", "required", "Region is required");
+//         }
+//         if (form.getPrice() == null || form.getPrice() <= 0) {
+//             bindingResult.rejectValue("price", "required", "Valid price is required");
+//         }
+//         if (bindingResult.hasErrors()) {
+//             redirectAttributes.addFlashAttribute("error", "Please correct the form. " + (form.getDescription() != null && form.getDescription().length() < 10 ? "Description is too short." : ""));
+//             return "redirect:/admin/destinations";
+//         }
         
-        Destination destination = new Destination();
-        destination.setName(form.getName());
-        destination.setDescription(form.getDescription());
-        destination.setImageUrl(form.getImageUrl());
-        destination.setRegion(form.getRegion());
-        destination.setPrice(form.getPrice());
-        destination.setRating(form.getRating());
-        destination.setReviewCount(form.getReviewCount());
-        destination.setBadge(form.getBadge());
-        destination.setIsActive(true);
+//         Destination destination = new Destination();
+//         destination.setName(form.getName());
+//         destination.setDescription(form.getDescription());
+//         destination.setImageUrl(form.getImageUrl());
+//         destination.setRegion(form.getRegion());
+//         destination.setPrice(form.getPrice());
+//         destination.setRating(form.getRating());
+//         destination.setReviewCount(form.getReviewCount());
+//         destination.setBadge(form.getBadge());
+//         destination.setIsActive(true);
         
-        destinationRepository.save(destination);
-        return "redirect:/admin/destinations?created";
-    }
+//         destinationRepository.save(destination);
+//         return "redirect:/admin/destinations?created";
+//     }
 
-    @PostMapping("/destinations/{id}/update")
-    public String updateDestination(@PathVariable("id") Long id,
-                                   @ModelAttribute("destination") UpdateDestinationForm form,
-                                   BindingResult bindingResult,
-                                   RedirectAttributes redirectAttributes) {
-        Destination destination = destinationRepository.findById(id).orElse(null);
-        if (destination == null) {
-            return "redirect:/admin/destinations?notfound";
-        }
-        if (form.getName() == null || form.getName().isBlank()) {
-            bindingResult.rejectValue("name", "required", "Destination name is required");
-        }
-        if (form.getDescription() == null || form.getDescription().isBlank()) {
-            bindingResult.rejectValue("description", "required", "Description is required");
-        } else if (form.getDescription().length() < 10 || form.getDescription().length() > 500) {
-            bindingResult.rejectValue("description", "size", "Description must be between 10 and 500 characters");
-        }
-        if (form.getImageUrl() == null || form.getImageUrl().isBlank()) {
-            bindingResult.rejectValue("imageUrl", "required", "Image URL is required");
-        }
-        if (form.getRegion() == null || form.getRegion().isBlank()) {
-            bindingResult.rejectValue("region", "required", "Region is required");
-        }
-        if (form.getPrice() == null || form.getPrice() <= 0) {
-            bindingResult.rejectValue("price", "required", "Valid price is required");
-        }
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("error", "Please correct the form. " + (form.getDescription() != null && form.getDescription().length() < 10 ? "Description is too short." : ""));
-            return "redirect:/admin/destinations";
-        }
+//     @PostMapping("/destinations/{id}/update")
+//     public String updateDestination(@PathVariable("id") Long id,
+//                                    @ModelAttribute("destination") UpdateDestinationForm form,
+//                                    BindingResult bindingResult,
+//                                    RedirectAttributes redirectAttributes) {
+//         Destination destination = destinationRepository.findById(id).orElse(null);
+//         if (destination == null) {
+//             return "redirect:/admin/destinations?notfound";
+//         }
+//         if (form.getName() == null || form.getName().isBlank()) {
+//             bindingResult.rejectValue("name", "required", "Destination name is required");
+//         }
+//         if (form.getDescription() == null || form.getDescription().isBlank()) {
+//             bindingResult.rejectValue("description", "required", "Description is required");
+//         } else if (form.getDescription().length() < 10 || form.getDescription().length() > 500) {
+//             bindingResult.rejectValue("description", "size", "Description must be between 10 and 500 characters");
+//         }
+//         if (form.getImageUrl() == null || form.getImageUrl().isBlank()) {
+//             bindingResult.rejectValue("imageUrl", "required", "Image URL is required");
+//         }
+//         if (form.getRegion() == null || form.getRegion().isBlank()) {
+//             bindingResult.rejectValue("region", "required", "Region is required");
+//         }
+//         if (form.getPrice() == null || form.getPrice() <= 0) {
+//             bindingResult.rejectValue("price", "required", "Valid price is required");
+//         }
+//         if (bindingResult.hasErrors()) {
+//             redirectAttributes.addFlashAttribute("error", "Please correct the form. " + (form.getDescription() != null && form.getDescription().length() < 10 ? "Description is too short." : ""));
+//             return "redirect:/admin/destinations";
+//         }
         
-        destination.setName(form.getName());
-        destination.setDescription(form.getDescription());
-        destination.setImageUrl(form.getImageUrl());
-        destination.setRegion(form.getRegion());
-        destination.setPrice(form.getPrice());
-        destination.setRating(form.getRating());
-        destination.setReviewCount(form.getReviewCount());
-        destination.setBadge(form.getBadge());
-        if (form.getIsActive() != null) {
-            destination.setIsActive(form.getIsActive());
-        }
+//         destination.setName(form.getName());
+//         destination.setDescription(form.getDescription());
+//         destination.setImageUrl(form.getImageUrl());
+//         destination.setRegion(form.getRegion());
+//         destination.setPrice(form.getPrice());
+//         destination.setRating(form.getRating());
+//         destination.setReviewCount(form.getReviewCount());
+//         destination.setBadge(form.getBadge());
+//         if (form.getIsActive() != null) {
+//             destination.setIsActive(form.getIsActive());
+//         }
         
-        destinationRepository.save(destination);
-        return "redirect:/admin/destinations?updated";
-    }
+//         destinationRepository.save(destination);
+//         return "redirect:/admin/destinations?updated";
+//     }
 
-    @PostMapping("/destinations/{id}/delete")
-    public String deleteDestination(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-        Destination destination = destinationRepository.findById(id).orElse(null);
-        if (destination == null) {
-            redirectAttributes.addFlashAttribute("error", "Destination not found");
-            return "redirect:/admin/destinations";
-        }
+//     @PostMapping("/destinations/{id}/delete")
+//     public String deleteDestination(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+//         Destination destination = destinationRepository.findById(id).orElse(null);
+//         if (destination == null) {
+//             redirectAttributes.addFlashAttribute("error", "Destination not found");
+//             return "redirect:/admin/destinations";
+//         }
 
-        long usageCount = bookingRepository.countByDestination(destination);
-        if (usageCount > 0) {
-            redirectAttributes.addFlashAttribute(
-                "error",
-                "Cannot delete destination: it is referenced by " + usageCount + " booking(s)."
-            );
-            return "redirect:/admin/destinations";
-        }
+//         long usageCount = bookingRepository.countByDestination(destination);
+//         if (usageCount > 0) {
+//             redirectAttributes.addFlashAttribute(
+//                 "error",
+//                 "Cannot delete destination: it is referenced by " + usageCount + " booking(s)."
+//             );
+//             return "redirect:/admin/destinations";
+//         }
 
-        destinationRepository.delete(destination);
-        redirectAttributes.addFlashAttribute("success", "Destination deleted");
-        return "redirect:/admin/destinations";
-    }
-//finance officer stuff and eamil gen
-public String generateMailtoLink(Booking booking) {
-    String recipient = booking.getUser().getEmail();
-    String subject = "Your Booking Has Been Approved!";
-    StringBuilder body = new StringBuilder();
-    body.append("Hello ").append(booking.getUser().getUsername()).append(",%0D%0A%0D%0A");
-    body.append("Your booking with ID ").append(booking.getId()).append(" has been approved.%0D%0A");
-    body.append("Destination: ").append(booking.getDestination().getName()).append("%0D%0A");
-    body.append("Travel Date: ").append(booking.getTravelDate()).append("%0D%0A");
-    body.append("Number of Travelers: ").append(booking.getNumberOfTravelers()).append("%0D%0A");
-    body.append("%0D%0AEnjoy your trip!%0D%0A%0D%0A");
-    body.append("View your destination image here: ").append(booking.getDestination().getImageUrl()).append("%0D%0A");
+//         destinationRepository.delete(destination);
+//         redirectAttributes.addFlashAttribute("success", "Destination deleted");
+//         return "redirect:/admin/destinations";
+//     }
+// //finance officer stuff and eamil gen
+// public String generateMailtoLink(Booking booking) {
+//     String recipient = booking.getUser().getEmail();
+//     String subject = "Your Booking Has Been Approved!";
+//     StringBuilder body = new StringBuilder();
+//     body.append("Hello ").append(booking.getUser().getUsername()).append(",%0D%0A%0D%0A");
+//     body.append("Your booking with ID ").append(booking.getId()).append(" has been approved.%0D%0A");
+//     body.append("Destination: ").append(booking.getDestination().getName()).append("%0D%0A");
+//     body.append("Travel Date: ").append(booking.getTravelDate()).append("%0D%0A");
+//     body.append("Number of Travelers: ").append(booking.getNumberOfTravelers()).append("%0D%0A");
+//     body.append("%0D%0AEnjoy your trip!%0D%0A%0D%0A");
+//     body.append("View your destination image here: ").append(booking.getDestination().getImageUrl()).append("%0D%0A");
 
-    return String.format(
-            "mailto:%s?subject=%s&body=%s",
-            java.net.URLEncoder.encode(recipient, java.nio.charset.StandardCharsets.UTF_8),
-            java.net.URLEncoder.encode(subject, java.nio.charset.StandardCharsets.UTF_8),
-            body.toString()
-    );
-}
-    // Booking management endpoints
-    @GetMapping("/bookings")
-    public String manageBookings(Model model,
-                                @RequestParam(value = "status", required = false) String status,
-                                @RequestParam(value = "destination", required = false) Long destinationId) {
-        List<Booking> bookings;
+//     return String.format(
+//             "mailto:%s?subject=%s&body=%s",
+//             java.net.URLEncoder.encode(recipient, java.nio.charset.StandardCharsets.UTF_8),
+//             java.net.URLEncoder.encode(subject, java.nio.charset.StandardCharsets.UTF_8),
+//             body.toString()
+//     );
+// }
+//     // Booking management endpoints
+//     @GetMapping("/bookings")
+//     public String manageBookings(Model model,
+//                                 @RequestParam(value = "status", required = false) String status,
+//                                 @RequestParam(value = "destination", required = false) Long destinationId) {
+//         List<Booking> bookings;
         
-        if (status != null && !status.isEmpty()) {
-            try {
-                BookingStatus bookingStatus = BookingStatus.valueOf(status.toUpperCase());
-                bookings = bookingRepository.findByStatusOrderByCreatedAtDesc(bookingStatus);
-            } catch (IllegalArgumentException e) {
-                bookings = bookingRepository.findAll();
-            }
-        } else if (destinationId != null) {
-            Destination destination = destinationRepository.findById(destinationId).orElse(null);
-            if (destination != null) {
-                bookings = bookingRepository.findByDestinationOrderByCreatedAtDesc(destination);
-            } else {
-                bookings = bookingRepository.findAll();
-            }
-        } else {
-            bookings = bookingRepository.findAll();
-        }
+//         if (status != null && !status.isEmpty()) {
+//             try {
+//                 BookingStatus bookingStatus = BookingStatus.valueOf(status.toUpperCase());
+//                 bookings = bookingRepository.findByStatusOrderByCreatedAtDesc(bookingStatus);
+//             } catch (IllegalArgumentException e) {
+//                 bookings = bookingRepository.findAll();
+//             }
+//         } else if (destinationId != null) {
+//             Destination destination = destinationRepository.findById(destinationId).orElse(null);
+//             if (destination != null) {
+//                 bookings = bookingRepository.findByDestinationOrderByCreatedAtDesc(destination);
+//             } else {
+//                 bookings = bookingRepository.findAll();
+//             }
+//         } else {
+//             bookings = bookingRepository.findAll();
+//         }
         
-        List<Destination> destinations = destinationRepository.findByIsActiveTrue();
+//         List<Destination> destinations = destinationRepository.findByIsActiveTrue();
         
-        model.addAttribute("bookings", bookings);
-        model.addAttribute("destinations", destinations);
-        model.addAttribute("selectedStatus", status);
-        model.addAttribute("selectedDestination", destinationId);
+//         model.addAttribute("bookings", bookings);
+//         model.addAttribute("destinations", destinations);
+//         model.addAttribute("selectedStatus", status);
+//         model.addAttribute("selectedDestination", destinationId);
         
-        return "manage-bookings";
-    }
+//         return "manage-bookings";
+//     }
 
-    @PostMapping("/bookings/{id}/approve")
-    public String approveBooking(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-        System.out.println("Approving booking with ID: " + id);
-        Booking booking = bookingRepository.findById(id).orElse(null);
-        if (booking == null) {
-            System.out.println("Booking not found with ID: " + id);
-            redirectAttributes.addFlashAttribute("error", "Booking not found");
-            return "redirect:/admin/bookings";
-        }
+//     @PostMapping("/bookings/{id}/approve")
+//     public String approveBooking(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+//         System.out.println("Approving booking with ID: " + id);
+//         Booking booking = bookingRepository.findById(id).orElse(null);
+//         if (booking == null) {
+//             System.out.println("Booking not found with ID: " + id);
+//             redirectAttributes.addFlashAttribute("error", "Booking not found");
+//             return "redirect:/admin/bookings";
+//         }
 
-        if (booking.getStatus() != BookingStatus.PENDING) {
-            System.out.println("Booking status is not PENDING: " + booking.getStatus());
-            redirectAttributes.addFlashAttribute("error", "Only pending bookings can be approved");
-            return "redirect:/admin/bookings";
-        }
+//         if (booking.getStatus() != BookingStatus.PENDING) {
+//             System.out.println("Booking status is not PENDING: " + booking.getStatus());
+//             redirectAttributes.addFlashAttribute("error", "Only pending bookings can be approved");
+//             return "redirect:/admin/bookings";
+//         }
 
-        booking.setStatus(BookingStatus.APPROVED);
-        bookingRepository.save(booking);
-        System.out.println("Booking approved successfully");
-        // Use the Observer Pattern to do things like logging and email notifications
-        //this attribute is needed to make email link open from frontend
+//         booking.setStatus(BookingStatus.APPROVED);
+//         bookingRepository.save(booking);
+//         System.out.println("Booking approved successfully");
+//         // Use the Observer Pattern to do things like logging and email notifications
+//         //this attribute is needed to make email link open from frontend
 
-        redirectAttributes.addFlashAttribute("mailtoLink", generateMailtoLink(booking));
-        BookingEventSubject.getInstance().notifyBookingApproved(booking);
-        redirectAttributes.addFlashAttribute("success", "Booking approved successfully");
-        return "redirect:/admin/bookings";
-    }
+//         redirectAttributes.addFlashAttribute("mailtoLink", generateMailtoLink(booking));
+//         BookingEventSubject.getInstance().notifyBookingApproved(booking);
+//         redirectAttributes.addFlashAttribute("success", "Booking approved successfully");
+//         return "redirect:/admin/bookings";
+//     }
 
-    @PostMapping("/bookings/{id}/reject")
-    public String rejectBooking(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-        System.out.println("Rejecting booking with ID: " + id);
-        Booking booking = bookingRepository.findById(id).orElse(null);
-        if (booking == null) {
-            System.out.println("Booking not found with ID: " + id);
-            redirectAttributes.addFlashAttribute("error", "Booking not found");
-            return "redirect:/admin/bookings";
-        }
+//     @PostMapping("/bookings/{id}/reject")
+//     public String rejectBooking(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+//         System.out.println("Rejecting booking with ID: " + id);
+//         Booking booking = bookingRepository.findById(id).orElse(null);
+//         if (booking == null) {
+//             System.out.println("Booking not found with ID: " + id);
+//             redirectAttributes.addFlashAttribute("error", "Booking not found");
+//             return "redirect:/admin/bookings";
+//         }
 
-        if (booking.getStatus() != BookingStatus.PENDING) {
-            System.out.println("Booking status is not PENDING: " + booking.getStatus());
-            redirectAttributes.addFlashAttribute("error", "Only pending bookings can be rejected");
-            return "redirect:/admin/bookings";
-        }
+//         if (booking.getStatus() != BookingStatus.PENDING) {
+//             System.out.println("Booking status is not PENDING: " + booking.getStatus());
+//             redirectAttributes.addFlashAttribute("error", "Only pending bookings can be rejected");
+//             return "redirect:/admin/bookings";
+//         }
 
-        booking.setStatus(BookingStatus.REJECTED);
-        bookingRepository.save(booking);
-        System.out.println("Booking rejected successfully");
-        redirectAttributes.addFlashAttribute("success", "Booking rejected successfully");
-        return "redirect:/admin/bookings";
-    }
+//         booking.setStatus(BookingStatus.REJECTED);
+//         bookingRepository.save(booking);
+//         System.out.println("Booking rejected successfully");
+//         redirectAttributes.addFlashAttribute("success", "Booking rejected successfully");
+//         return "redirect:/admin/bookings";
+//     }
 
-    @PostMapping("/bookings/{id}/update-status")
-    public String updateBookingStatus(@PathVariable("id") Long id,
-                                     @RequestParam("status") String status,
-                                     RedirectAttributes redirectAttributes) {
-        Booking booking = bookingRepository.findById(id).orElse(null);
-        if (booking == null) {
-            redirectAttributes.addFlashAttribute("error", "Booking not found");
-            return "redirect:/admin/bookings";
-        }
+//     @PostMapping("/bookings/{id}/update-status")
+//     public String updateBookingStatus(@PathVariable("id") Long id,
+//                                      @RequestParam("status") String status,
+//                                      RedirectAttributes redirectAttributes) {
+//         Booking booking = bookingRepository.findById(id).orElse(null);
+//         if (booking == null) {
+//             redirectAttributes.addFlashAttribute("error", "Booking not found");
+//             return "redirect:/admin/bookings";
+//         }
 
-        try {
-            BookingStatus newStatus = BookingStatus.valueOf(status.toUpperCase());
+//         try {
+//             BookingStatus newStatus = BookingStatus.valueOf(status.toUpperCase());
             
-            // Prevent invalid status transitions
-            if (booking.getStatus() == BookingStatus.PENDING && 
-                (newStatus == BookingStatus.CANCELLED || newStatus == BookingStatus.COMPLETED)) {
-                redirectAttributes.addFlashAttribute("error", "Pending bookings must be approved or rejected first");
-                return "redirect:/admin/bookings";
-            }
+//             // Prevent invalid status transitions
+//             if (booking.getStatus() == BookingStatus.PENDING && 
+//                 (newStatus == BookingStatus.CANCELLED || newStatus == BookingStatus.COMPLETED)) {
+//                 redirectAttributes.addFlashAttribute("error", "Pending bookings must be approved or rejected first");
+//                 return "redirect:/admin/bookings";
+//             }
             
-            booking.setStatus(newStatus);
-            bookingRepository.save(booking);
-            redirectAttributes.addFlashAttribute("success", "Booking status updated successfully");
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", "Invalid status");
-        }
+//             booking.setStatus(newStatus);
+//             bookingRepository.save(booking);
+//             redirectAttributes.addFlashAttribute("success", "Booking status updated successfully");
+//         } catch (IllegalArgumentException e) {
+//             redirectAttributes.addFlashAttribute("error", "Invalid status");
+//         }
 
-        return "redirect:/admin/bookings";
-    }
+//         return "redirect:/admin/bookings";
+//     }
 
     public static class CreateUserForm {
         private String username;
@@ -443,66 +434,75 @@ public String generateMailtoLink(Booking booking) {
         public void setPassword(String password) { this.password = password; }
         public String getRole() { return role; }
         public void setRole(String role) { this.role = role; }
-    }
-
-    public static class CreateDestinationForm {
-        private String name;
-        private String description;
-        private String imageUrl;
-        private String region;
-        private Double price;
-        private Double rating;
-        private Integer reviewCount;
-        private String badge;
-
-        public String getName() { return name; }
-        public void setName(String name) { this.name = name; }
-        public String getDescription() { return description; }
-        public void setDescription(String description) { this.description = description; }
-        public String getImageUrl() { return imageUrl; }
-        public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-        public String getRegion() { return region; }
-        public void setRegion(String region) { this.region = region; }
-        public Double getPrice() { return price; }
-        public void setPrice(Double price) { this.price = price; }
-        public Double getRating() { return rating; }
-        public void setRating(Double rating) { this.rating = rating; }
-        public Integer getReviewCount() { return reviewCount; }
-        public void setReviewCount(Integer reviewCount) { this.reviewCount = reviewCount; }
-        public String getBadge() { return badge; }
-        public void setBadge(String badge) { this.badge = badge; }
-    }
-
-    public static class UpdateDestinationForm {
-        private String name;
-        private String description;
-        private String imageUrl;
-        private String region;
-        private Double price;
-        private Double rating;
-        private Integer reviewCount;
-        private String badge;
-        private Boolean isActive;
-
-        public String getName() { return name; }
-        public void setName(String name) { this.name = name; }
-        public String getDescription() { return description; }
-        public void setDescription(String description) { this.description = description; }
-        public String getImageUrl() { return imageUrl; }
-        public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-        public String getRegion() { return region; }
-        public void setRegion(String region) { this.region = region; }
-        public Double getPrice() { return price; }
-        public void setPrice(Double price) { this.price = price; }
-        public Double getRating() { return rating; }
-        public void setRating(Double rating) { this.rating = rating; }
-        public Integer getReviewCount() { return reviewCount; }
-        public void setReviewCount(Integer reviewCount) { this.reviewCount = reviewCount; }
-        public String getBadge() { return badge; }
-        public void setBadge(String badge) { this.badge = badge; }
-        public Boolean getIsActive() { return isActive; }
-        public void setIsActive(Boolean isActive) { this.isActive = isActive; }
-    }
 }
+
+    // public static class CreateDestinationForm {
+    //     private String name;
+    //     private String description;
+    //     private String imageUrl;
+    //     private String region;
+    //     private Double price;
+    //     private Double rating;
+    //     private Integer reviewCount;
+    //     private String badge;
+
+    //     public String getName() { return name; }
+    //     public void setName(String name) { this.name = name; }
+    //     public String getDescription() { return description; }
+    //     public void setDescription(String description) { this.description = description; }
+    //     public String getImageUrl() { return imageUrl; }
+    //     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    //     public String getRegion() { return region; }
+    //     public void setRegion(String region) { this.region = region; }
+    //     public Double getPrice() { return price; }
+    //     public void setPrice(Double price) { this.price = price; }
+    //     public Double getRating() { return rating; }
+    //     public void setRating(Double rating) { this.rating = rating; }
+    //     public Integer getReviewCount() { return reviewCount; }
+    //     public void setReviewCount(Integer reviewCount) { this.reviewCount = reviewCount; }
+    //     public String getBadge() { return badge; }
+    //     public void setBadge(String badge) { this.badge = badge; }
+    }
+
+//     public static class UpdateDestinationForm {
+//         private String name;
+//         private String description;
+//         private String imageUrl;
+//         private String region;
+//         private Double price;
+//         private Double rating;
+//         private Integer reviewCount;
+//         private String badge;
+//         private Boolean isActive;
+
+//         public String getName() { return name; }
+//         public void setName(String name) { this.name = name; }
+//         public String getDescription() { return description; }
+//         public void setDescription(String description) { this.description = description; }
+//         public String getImageUrl() { return imageUrl; }
+//         public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+//         public String getRegion() { return region; }
+//         public void setRegion(String region) { this.region = region; }
+//         public Double getPrice() { return price; }
+//         public void setPrice(Double price) { this.price = price; }
+//         public Double getRating() { return rating; }
+//         public void setRating(Double rating) { this.rating = rating; }
+//         public Integer getReviewCount() { return reviewCount; }
+//         public void setReviewCount(Integer reviewCount) { this.reviewCount = reviewCount; }
+//         public String getBadge() { return badge; }
+//         public void setBadge(String badge) { this.badge = badge; }
+//         public Boolean getIsActive() { return isActive; }
+//         public void setIsActive(Boolean isActive) { this.isActive = isActive; }
+//     }
+// }
+//         public void setRating(Double rating) { this.rating = rating; }
+//         public Integer getReviewCount() { return reviewCount; }
+//         public void setReviewCount(Integer reviewCount) { this.reviewCount = reviewCount; }
+//         public String getBadge() { return badge; }
+//         public void setBadge(String badge) { this.badge = badge; }
+//         public Boolean getIsActive() { return isActive; }
+//         public void setIsActive(Boolean isActive) { this.isActive = isActive; }
+//     }
+// }
 
 
