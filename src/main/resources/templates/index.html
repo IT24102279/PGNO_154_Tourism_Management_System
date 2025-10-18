@@ -852,6 +852,312 @@
             animation-delay: 0.6s;
         }
 
+        /* Feedback Section */
+        .feedback-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .feedback-form-container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .feedback-form h3 {
+            font-size: clamp(1.2rem, 3.5vw, 1.4rem);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .rating-input {
+            display: flex;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .rating-input input[type="radio"] {
+            display: none;
+        }
+
+        .rating-input .star {
+            font-size: 1.5rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .rating-input .star:hover,
+        .rating-input input[type="radio"]:checked ~ .star,
+        .rating-input input[type="radio"]:checked + .star {
+            color: #ffc107;
+        }
+
+        .rating-input input[type="radio"]:checked ~ .star {
+            color: #ffc107;
+        }
+
+        .feedback-message {
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .feedback-message.success {
+            background: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(76, 201, 240, 0.3);
+        }
+
+        .feedback-message.error {
+            background: rgba(239, 35, 60, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 35, 60, 0.3);
+        }
+
+        .recent-feedback-container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .recent-feedback-container h3 {
+            font-size: clamp(1.2rem, 3.5vw, 1.4rem);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+
+        .recent-feedback-list {
+            max-height: 400px;
+            overflow-y: auto;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-feedback {
+            text-align: center;
+            color: var(--gray);
+            padding: 2rem;
+        }
+
+        .feedback-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .feedback-item:last-child {
+            border-bottom: none;
+        }
+
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .feedback-author {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .feedback-rating {
+            color: #ffc107;
+            font-size: 0.9rem;
+        }
+
+        .feedback-text {
+            color: var(--gray-dark);
+            line-height: 1.5;
+            font-size: clamp(0.85rem, 2.5vw, 0.9rem);
+        }
+
+        .feedback-date {
+            color: var(--gray);
+            font-size: clamp(0.8rem, 2.5vw, 0.85rem);
+            margin-top: 0.5rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--dark);
+            font-size: clamp(1.2rem, 3.5vw, 1.4rem);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(239, 35, 60, 0.1);
+            color: var(--danger);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        .feedback-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .feedback-action-btn {
+            background: none;
+            border: 1px solid var(--gray);
+            color: var(--gray);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-action-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .feedback-action-btn.delete:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+        }
+
+        /* Responsive adjustments for feedback section */
+        @media (max-width: 768px) {
+            .feedback-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .feedback-form-container,
+            .recent-feedback-container {
+                padding: 1.5rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .rating-input .star {
+                font-size: 1.25rem;
+            }
+
+            .feedback-form-container,
+            .recent-feedback-container {
+                padding: 1.25rem;
+            }
+        }
+
         /* Enhanced Responsive Adjustments */
         @media (max-width: 992px) {
             .hero-container {
@@ -1255,6 +1561,113 @@
         </div>
     </section>
 
+    <!-- Customer Feedback Section -->
+    <section class="section" id="feedback" aria-labelledby="feedback-title">
+        <div class="container">
+            <div class="section-title animate">
+                <h2 id="feedback-title">Share Your Experience</h2>
+                <p>We'd love to hear about your travel experience with us</p>
+            </div>
+            
+            <div class="feedback-container">
+                <div class="feedback-form-container animate delay-1">
+                    <div class="feedback-form">
+                        <h3>Leave Your Feedback</h3>
+                        <form id="feedbackForm">
+                            <div class="form-group">
+                                <label for="feedbackName">Name *</label>
+                                <input type="text" id="feedbackName" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="feedbackEmail">Email *</label>
+                                <input type="email" id="feedbackEmail" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="feedbackRating">Rating</label>
+                                <div class="rating-input">
+                                    <input type="radio" id="star5" name="rating" value="5">
+                                    <label for="star5" class="star">★</label>
+                                    <input type="radio" id="star4" name="rating" value="4">
+                                    <label for="star4" class="star">★</label>
+                                    <input type="radio" id="star3" name="rating" value="3">
+                                    <label for="star3" class="star">★</label>
+                                    <input type="radio" id="star2" name="rating" value="2">
+                                    <label for="star2" class="star">★</label>
+                                    <input type="radio" id="star1" name="rating" value="1">
+                                    <label for="star1" class="star">★</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="feedbackMessage">Your Message *</label>
+                                <textarea id="feedbackMessage" name="message" rows="4" required placeholder="Tell us about your experience..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Submit Feedback
+                            </button>
+                        </form>
+                        <div id="feedbackStatusMessage" class="feedback-message"></div>
+                    </div>
+                </div>
+                
+                <div class="recent-feedback-container animate delay-2">
+                    <h3>Recent Feedback</h3>
+                    <div id="recentFeedback" class="recent-feedback-list">
+                        <div class="loading-feedback">
+                            <i class="fas fa-spinner fa-spin"></i> Loading feedback...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Edit Feedback Modal -->
+    <div id="editFeedbackModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Your Feedback</h3>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="editFeedbackForm">
+                <input type="hidden" id="editFeedbackId" name="id">
+                <div class="form-group">
+                    <label for="editFeedbackName">Name *</label>
+                    <input type="text" id="editFeedbackName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="editFeedbackEmail">Email *</label>
+                    <input type="email" id="editFeedbackEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="editFeedbackRating">Rating</label>
+                    <div class="rating-input">
+                        <input type="radio" id="editStar5" name="rating" value="5">
+                        <label for="editStar5" class="star">★</label>
+                        <input type="radio" id="editStar4" name="rating" value="4">
+                        <label for="editStar4" class="star">★</label>
+                        <input type="radio" id="editStar3" name="rating" value="3">
+                        <label for="editStar3" class="star">★</label>
+                        <input type="radio" id="editStar2" name="rating" value="2">
+                        <label for="editStar2" class="star">★</label>
+                        <input type="radio" id="editStar1" name="rating" value="1">
+                        <label for="editStar1" class="star">★</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editFeedbackMessage">Your Message *</label>
+                    <textarea id="editFeedbackMessage" name="message" rows="4" required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Feedback
+                    </button>
+                </div>
+            </form>
+            <div id="editFeedbackStatusMessage" class="feedback-message"></div>
+        </div>
+    </div>
+
     <!-- CTA Section -->
     <section class="cta" aria-labelledby="cta-title">
         <div class="cta-container">
@@ -1407,7 +1820,278 @@
                     header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.05)';
                 }
             });
+
+            // Feedback form functionality
+            const feedbackForm = document.getElementById('feedbackForm');
+            const feedbackMessage = document.getElementById('feedbackStatusMessage');
+            const recentFeedbackContainer = document.getElementById('recentFeedback');
+
+            // Handle feedback form submission
+            if (feedbackForm) {
+                feedbackForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(feedbackForm);
+                    const data = {
+                        name: formData.get('name'),
+                        email: formData.get('email'),
+                        message: formData.get('message'),
+                        rating: formData.get('rating') ? parseInt(formData.get('rating')) : null
+                    };
+
+                    try {
+                        const response = await fetch('/feedback/submit', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(data)
+                        });
+
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            feedbackMessage.textContent = result.message;
+                            feedbackMessage.className = 'feedback-message success';
+                            feedbackMessage.style.display = 'block';
+                            
+                            // Store user email for edit/delete functionality
+                            localStorage.setItem('currentUserEmail', data.email);
+                            
+                            feedbackForm.reset();
+                            
+                            // Add success animation to the submit button
+                            const submitBtn = feedbackForm.querySelector('button[type="submit"]');
+                            submitBtn.innerHTML = '<i class="fas fa-check"></i> Feedback Submitted!';
+                            submitBtn.style.background = 'linear-gradient(135deg, var(--success), #4cc9f0)';
+                            
+                            // Reload recent feedback
+                            loadRecentFeedback();
+                            
+                            // Reset button after 3 seconds
+                            setTimeout(() => {
+                                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Feedback';
+                                submitBtn.style.background = '';
+                            }, 3000);
+                        } else {
+                            feedbackMessage.textContent = result.message;
+                            feedbackMessage.className = 'feedback-message error';
+                            feedbackMessage.style.display = 'block';
+                        }
+                    } catch (error) {
+                        feedbackMessage.textContent = 'An error occurred. Please try again.';
+                        feedbackMessage.className = 'feedback-message error';
+                        feedbackMessage.style.display = 'block';
+                    }
+                });
+            }
+
+            // Load recent feedback
+            async function loadRecentFeedback() {
+                // Show loading indicator
+                recentFeedbackContainer.innerHTML = '<div class="loading-feedback"><i class="fas fa-spinner fa-spin"></i> Loading feedback...</div>';
+                
+                try {
+                    const response = await fetch('/feedback/approved');
+                    const feedback = await response.json();
+                    
+                    if (feedback.length === 0) {
+                        recentFeedbackContainer.innerHTML = '<div class="loading-feedback">No feedback available yet.</div>';
+                        return;
+                    }
+
+                    const feedbackHTML = feedback.map(item => {
+                        const stars = '★'.repeat(item.rating || 0);
+                        const date = new Date(item.createdAt).toLocaleDateString();
+                        const isCurrentUser = localStorage.getItem('currentUserEmail') === item.email;
+                        
+                        return `
+                            <div class="feedback-item" data-feedback-id="${item.id}">
+                                <div class="feedback-header">
+                                    <div class="feedback-author">${item.name}</div>
+                                    <div class="feedback-rating">${stars}</div>
+                                </div>
+                                <div class="feedback-text">${item.message}</div>
+                                <div class="feedback-date">${date}</div>
+                                ${isCurrentUser ? `
+                                    <div class="feedback-actions">
+                                        <button class="feedback-action-btn edit" onclick="openEditModal(${item.id}, '${item.name}', '${item.email}', ${item.rating}, '${item.message.replace(/'/g, "\\'")}')">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="feedback-action-btn delete" onclick="deleteFeedback(${item.id})">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }).join('');
+
+                    // Add smooth transition effect
+                    recentFeedbackContainer.style.opacity = '0.5';
+                    setTimeout(() => {
+                        recentFeedbackContainer.innerHTML = feedbackHTML;
+                        recentFeedbackContainer.style.opacity = '1';
+                    }, 200);
+                    
+                } catch (error) {
+                    recentFeedbackContainer.innerHTML = '<div class="loading-feedback">Unable to load feedback.</div>';
+                }
+            }
+
+            // Load recent feedback on page load
+            loadRecentFeedback();
         });
+
+        // Global functions for edit/delete functionality
+        function openEditModal(id, name, email, rating, message) {
+            console.log('Opening edit modal with:', {id, name, email, rating, message});
+            
+            document.getElementById('editFeedbackId').value = id;
+            document.getElementById('editFeedbackName').value = name;
+            document.getElementById('editFeedbackEmail').value = email;
+            document.getElementById('editFeedbackMessage').value = message;
+            
+            // Set rating
+            document.querySelectorAll('#editFeedbackForm input[name="rating"]').forEach(input => {
+                input.checked = false;
+            });
+            if (rating) {
+                const ratingInput = document.getElementById(`editStar${rating}`);
+                if (ratingInput) {
+                    ratingInput.checked = true;
+                    console.log('Set rating to:', rating);
+                }
+            }
+            
+            document.getElementById('editFeedbackModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editFeedbackModal').style.display = 'none';
+            document.getElementById('editFeedbackStatusMessage').style.display = 'none';
+        }
+
+
+        async function deleteFeedback(id) {
+            if (!confirm('Are you sure you want to delete this feedback?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/feedback/${id}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Remove the feedback item from the display
+                    const feedbackItem = document.querySelector(`[data-feedback-id="${id}"]`);
+                    if (feedbackItem) {
+                        feedbackItem.style.opacity = '0.5';
+                        feedbackItem.style.transform = 'translateX(-100%)';
+                        setTimeout(() => {
+                            loadRecentFeedback(); // Reload to refresh the list
+                        }, 300);
+                    }
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('An error occurred while deleting the feedback.');
+            }
+        }
+
+            // Handle edit form submission
+            const editForm = document.getElementById('editFeedbackForm');
+            if (editForm) {
+                editForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(editForm);
+                    const ratingValue = formData.get('rating');
+                    const data = {
+                        name: formData.get('name'),
+                        email: formData.get('email'),
+                        message: formData.get('message'),
+                        rating: ratingValue ? parseInt(ratingValue) : null
+                    };
+                    
+                    console.log('Form data extracted:', {
+                        name: data.name,
+                        email: data.email,
+                        message: data.message,
+                        rating: data.rating,
+                        ratingRaw: ratingValue
+                    });
+
+                    // Validate required fields
+                    if (!data.name || !data.email || !data.message) {
+                        const statusMessage = document.getElementById('editFeedbackStatusMessage');
+                        statusMessage.textContent = 'Please fill in all required fields.';
+                        statusMessage.className = 'feedback-message error';
+                        statusMessage.style.display = 'block';
+                        return;
+                    }
+
+                    const feedbackId = document.getElementById('editFeedbackId').value;
+                    const statusMessage = document.getElementById('editFeedbackStatusMessage');
+
+                    try {
+                        console.log('Updating feedback with ID:', feedbackId);
+                        console.log('Update data:', data);
+                        
+                        const response = await fetch(`/feedback/${feedbackId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(data)
+                        });
+
+                        console.log('Update response status:', response.status);
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const result = await response.json();
+                        console.log('Update result:', result);
+                        
+                        if (result.success) {
+                            statusMessage.textContent = result.message;
+                            statusMessage.className = 'feedback-message success';
+                            statusMessage.style.display = 'block';
+                            
+                            // Close modal after 2 seconds
+                            setTimeout(() => {
+                                closeEditModal();
+                                loadRecentFeedback(); // Reload to show updated feedback
+                            }, 2000);
+                        } else {
+                            statusMessage.textContent = result.message;
+                            statusMessage.className = 'feedback-message error';
+                            statusMessage.style.display = 'block';
+                        }
+                    } catch (error) {
+                        console.error('Update error:', error);
+                        statusMessage.textContent = `An error occurred: ${error.message}`;
+                        statusMessage.className = 'feedback-message error';
+                        statusMessage.style.display = 'block';
+                    }
+                });
+            }
+
+            // Close modal when clicking outside
+            const modal = document.getElementById('editFeedbackModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeEditModal();
+                    }
+                });
+            }
     </script>
 </body>
 </html>

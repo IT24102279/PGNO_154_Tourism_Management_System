@@ -171,12 +171,14 @@ public class AdminController {
     }
 
     @PostMapping("/destinations")
-    public String createDestination(@ModelAttribute("newDestination") CreateDestinationForm form, BindingResult bindingResult) {
+    public String createDestination(@ModelAttribute("newDestination") CreateDestinationForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (form.getName() == null || form.getName().isBlank()) {
             bindingResult.rejectValue("name", "required", "Destination name is required");
         }
         if (form.getDescription() == null || form.getDescription().isBlank()) {
             bindingResult.rejectValue("description", "required", "Description is required");
+        } else if (form.getDescription().length() < 10 || form.getDescription().length() > 500) {
+            bindingResult.rejectValue("description", "size", "Description must be between 10 and 500 characters");
         }
         if (form.getImageUrl() == null || form.getImageUrl().isBlank()) {
             bindingResult.rejectValue("imageUrl", "required", "Image URL is required");
@@ -188,7 +190,8 @@ public class AdminController {
             bindingResult.rejectValue("price", "required", "Valid price is required");
         }
         if (bindingResult.hasErrors()) {
-            return "redirect:/admin/destinations?error";
+            redirectAttributes.addFlashAttribute("error", "Please correct the form. " + (form.getDescription() != null && form.getDescription().length() < 10 ? "Description is too short." : ""));
+            return "redirect:/admin/destinations";
         }
         
         Destination destination = new Destination();
@@ -209,7 +212,8 @@ public class AdminController {
     @PostMapping("/destinations/{id}/update")
     public String updateDestination(@PathVariable("id") Long id,
                                    @ModelAttribute("destination") UpdateDestinationForm form,
-                                   BindingResult bindingResult) {
+                                   BindingResult bindingResult,
+                                   RedirectAttributes redirectAttributes) {
         Destination destination = destinationRepository.findById(id).orElse(null);
         if (destination == null) {
             return "redirect:/admin/destinations?notfound";
@@ -219,6 +223,8 @@ public class AdminController {
         }
         if (form.getDescription() == null || form.getDescription().isBlank()) {
             bindingResult.rejectValue("description", "required", "Description is required");
+        } else if (form.getDescription().length() < 10 || form.getDescription().length() > 500) {
+            bindingResult.rejectValue("description", "size", "Description must be between 10 and 500 characters");
         }
         if (form.getImageUrl() == null || form.getImageUrl().isBlank()) {
             bindingResult.rejectValue("imageUrl", "required", "Image URL is required");
@@ -230,7 +236,8 @@ public class AdminController {
             bindingResult.rejectValue("price", "required", "Valid price is required");
         }
         if (bindingResult.hasErrors()) {
-            return "redirect:/admin/destinations?error";
+            redirectAttributes.addFlashAttribute("error", "Please correct the form. " + (form.getDescription() != null && form.getDescription().length() < 10 ? "Description is too short." : ""));
+            return "redirect:/admin/destinations";
         }
         
         destination.setName(form.getName());
@@ -250,9 +257,25 @@ public class AdminController {
     }
 
     @PostMapping("/destinations/{id}/delete")
-    public String deleteDestination(@PathVariable("id") Long id) {
-        destinationRepository.findById(id).ifPresent(destinationRepository::delete);
-        return "redirect:/admin/destinations?deleted";
+    public String deleteDestination(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        Destination destination = destinationRepository.findById(id).orElse(null);
+        if (destination == null) {
+            redirectAttributes.addFlashAttribute("error", "Destination not found");
+            return "redirect:/admin/destinations";
+        }
+
+        long usageCount = bookingRepository.countByDestination(destination);
+        if (usageCount > 0) {
+            redirectAttributes.addFlashAttribute(
+                "error",
+                "Cannot delete destination: it is referenced by " + usageCount + " booking(s)."
+            );
+            return "redirect:/admin/destinations";
+        }
+
+        destinationRepository.delete(destination);
+        redirectAttributes.addFlashAttribute("success", "Destination deleted");
+        return "redirect:/admin/destinations";
     }
 //finance officer stuff and eamil gen
 public String generateMailtoLink(Booking booking) {

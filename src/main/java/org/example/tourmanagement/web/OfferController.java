@@ -20,6 +20,7 @@ public class OfferController {
 
     @GetMapping("/offers")
     public String offers(Model model) {
+// Replace with  List<Offer> offers = offerRepository.findByIsActiveTrue(); i errors happen (merge conflict resolve)
         List<Offer> offers = offerRepository.findActiveAndCurrent(LocalDate.now());
         model.addAttribute("offers", offers);
         return "offers";

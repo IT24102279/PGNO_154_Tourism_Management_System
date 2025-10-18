@@ -25,6 +25,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     // Find bookings by destination
     List<Booking> findByDestinationOrderByCreatedAtDesc(Destination destination);
     
+    // Count bookings by destination (to prevent deleting in-use destinations)
+    long countByDestination(Destination destination);
+    
     // Find bookings within date range
     @Query("SELECT b FROM Booking b WHERE b.travelDate BETWEEN :startDate AND :endDate ORDER BY b.travelDate DESC")
     List<Booking> findByTravelDateBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
