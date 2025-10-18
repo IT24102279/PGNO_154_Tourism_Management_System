@@ -52,19 +52,24 @@ public class AdminInquiryController {
         inquiryRepository.findById(id).ifPresent(inquiry -> {
             inquiry.setReplyMessage(replyMessage);
             inquiry.setRepliedAt(java.time.LocalDateTime.now());
-            inquiry.setStatus(org.example.tourmanagement.support.InquiryStatus.CLOSED);
+            // Don't auto-close the ticket - let the agent manually close it
             inquiryRepository.save(inquiry);
         });
         return "redirect:/admin/inquiries/" + id + "?replied";
     }
 
-    @PostMapping("/{id}/close")
-    public String closeInquiry(@PathVariable("id") Long id) {
+    @PostMapping("/{id}/toggle-status")
+    public String toggleInquiryStatus(@PathVariable("id") Long id) {
         inquiryRepository.findById(id).ifPresent(inquiry -> {
-            inquiry.setStatus(InquiryStatus.CLOSED);
+            // Toggle between OPEN and CLOSED
+            if (inquiry.getStatus() == InquiryStatus.OPEN) {
+                inquiry.setStatus(InquiryStatus.CLOSED);
+            } else {
+                inquiry.setStatus(InquiryStatus.OPEN);
+            }
             inquiryRepository.save(inquiry);
         });
-        return "redirect:/admin/inquiries?updated";
+        return "redirect:/admin/inquiries/" + id + "?statusUpdated";
     }
 
     @PostMapping("/{id}/delete")
