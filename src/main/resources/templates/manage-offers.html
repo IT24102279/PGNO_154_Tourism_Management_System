@@ -794,17 +794,9 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i> Update Offer
                             </button>
-                            
-                            <!-- Delete button as separate form but styled inline -->
-                            <form th:action="@{'/admin/offers/' + ${offer.id} + '/delete'}" method="post" style="display: inline;">
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this offer? This action cannot be undone.')">
-                                    <i class="fas fa-trash"></i> Delete Offer
-                                </button>
-                            </form>
                         </div>
                     </form>
-                    
-                    <!-- Delete button as completely separate form outside the update form -->
+                    <!-- Only keep this delete form outside the update form -->
                     <div class="offer-actions">
                         <div></div> <!-- Empty div for spacing -->
                         <form th:action="@{'/admin/offers/' + ${offer.id} + '/delete'}" method="post">
