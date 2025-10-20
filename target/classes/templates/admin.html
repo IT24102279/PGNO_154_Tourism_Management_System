@@ -768,9 +768,8 @@
                 <p>Manage system backups and restores</p>
             </div>
             <div class="form-section animate delay-4">
-                <div class="form-actions">
+                <div class="form-actions" style="justify-content: center;">
                     <button class="btn btn-primary" onclick="initiateBackup()">Initiate Backup</button>
-                    <button class="btn btn-outline" onclick="restoreBackup()">Restore from Backup</button>
                 </div>
             </div>
         </div>
@@ -860,12 +859,6 @@
 
         function initiateBackup() {
             alert('System backup initiated. You will be notified upon completion.');
-        }
-
-        function restoreBackup() {
-            if (confirm('Are you sure you want to restore from the latest backup? This may overwrite current data.')) {
-                alert('System restore initiated. You will be notified upon completion.');
-            }
         }
     </script>
 </body>

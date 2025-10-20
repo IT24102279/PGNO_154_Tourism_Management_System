@@ -57,7 +57,25 @@ public class FinanceController {
 
         return "manage-bookings";
     }
+    public String generateMailtoLink(Booking booking) {
+        String recipient = booking.getUser().getEmail();
+        String subject = "Your Booking Has Been Approved!";
+        StringBuilder body = new StringBuilder();
+        body.append("Hello ").append(booking.getUser().getUsername()).append(",%0D%0A%0D%0A");
+        body.append("Your booking with ID ").append(booking.getId()).append(" has been approved.%0D%0A");
+        body.append("Destination: ").append(booking.getDestination().getName()).append("%0D%0A");
+        body.append("Travel Date: ").append(booking.getTravelDate()).append("%0D%0A");
+        body.append("Number of Travelers: ").append(booking.getNumberOfTravelers()).append("%0D%0A");
+        body.append("%0D%0AEnjoy your trip!%0D%0A%0D%0A");
+        body.append("View your destination image here: ").append(booking.getDestination().getImageUrl()).append("%0D%0A");
 
+        return String.format(
+                "mailto:%s?subject=%s&body=%s",
+                java.net.URLEncoder.encode(recipient, java.nio.charset.StandardCharsets.UTF_8),
+                java.net.URLEncoder.encode(subject, java.nio.charset.StandardCharsets.UTF_8),
+                body.toString()
+        );
+    }
     @PostMapping("/bookings/{id}/approve")
     public String approveBooking(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         Booking booking = bookingRepository.findById(id).orElse(null);
@@ -75,6 +93,7 @@ public class FinanceController {
         bookingRepository.save(booking);
         BookingEventSubject.getInstance().notifyBookingApproved(booking);
         redirectAttributes.addFlashAttribute("success", "Booking approved successfully");
+        redirectAttributes.addFlashAttribute("mailtoLink", generateMailtoLink(booking));
         return "redirect:/admin/bookings";
     }
 
